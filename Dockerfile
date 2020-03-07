@@ -7,4 +7,6 @@ RUN apt-get update && apt-get install -y \
       libzip-dev \
       && docker-php-ext-install zip
 
+RUN curl https://cli-assets.heroku.com/install.sh | sh
+
 WORKDIR /app
