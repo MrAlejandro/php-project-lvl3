@@ -29,6 +29,6 @@ jobs:
       env:
         DB_CONNECTION: sqlite
         DB_DATABASE: database/database.sqlite
-      run: make lint
+      run: make test
     - name: Lint project
       run: make lint
