@@ -1,6 +1,6 @@
 <html>
     <head>
-        <title>App Name - @yield('title')</title>
+        <title>Page Analyzer</title>
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
     </head>
     <body>
@@ -15,13 +15,14 @@
                         <a class="nav-link" href="{{ url('/') }}">{{ __('nav.home') }}</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="">{{ __('nav.domains') }}</a>
+                        <a class="nav-link" href="{{ route('domains.index') }}">{{ __('nav.domains') }}</a>
                     </li>
                 </ul>
             </div>
         </nav>
 
         <div class="container">
+            @include('flash::message')
             @yield('content')
         </div>
     </body>

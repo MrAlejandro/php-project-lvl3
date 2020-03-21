@@ -14,5 +14,9 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::get('/', function () {
-    return view('domains/new');
+    return view('domains.new');
 });
+
+Route::resource('domains', 'DomainController')->only([
+    'index', 'show', 'store'
+]);
