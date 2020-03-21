@@ -12,6 +12,7 @@ class DomainTest extends TestCase
 
     public function testIndex()
     {
+        Domain::create('google.com');
         $route = route('domains.index');
 
         $response = $this->get($route);
@@ -33,7 +34,7 @@ class DomainTest extends TestCase
         $url = 'http://google.com';
         $params = ['domain' => ['url' => $url]];
 
-        $response = $this->withoutExceptionHandling()->post($route, $params);
+        $response = $this->post($route, $params);
         $response->assertStatus(302);
 
         $domainName = 'google.com';
@@ -55,5 +56,18 @@ class DomainTest extends TestCase
 
         $redirectionRoute = route('domains.show', ['domain' => $domainId]);
         $response->assertRedirect($redirectionRoute);
+    }
+
+    public function testStoreDoesNotCreateRecordWithEmptyName()
+    {
+        $route = route('domains.store');
+        $params = ['domain' => ['url' => '']];
+
+        $response = $this->post($route, $params);
+        $response->assertStatus(302);
+
+        $this->assertDatabaseMissing('domains', [
+            'name' => '',
+        ]);
     }
 }
