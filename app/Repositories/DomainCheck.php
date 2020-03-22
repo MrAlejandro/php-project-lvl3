@@ -33,13 +33,13 @@ class DomainCheck
         return $domainChecks;
     }
 
-    public static function create($domainId)
+    public static function create($domainId, $statusCode = 200)
     {
         $currentTime = Carbon::now();
         $domainCheckId = self::table()->insertGetId(
             [
                 'domain_id' => $domainId,
-                'status_code' => 200,
+                'status_code' => $statusCode,
                 'created_at' => $currentTime,
                 'updated_at' => $currentTime,
             ]

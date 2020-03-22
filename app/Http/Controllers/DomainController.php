@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\StoreDomain;
+use App\Services\PageAnalysisService;
 use App\Repositories\DomainCheck;
 use App\Repositories\Domain;
 
@@ -36,8 +37,13 @@ class DomainController extends Controller
     public function check(int $id)
     {
         $domain = Domain::findOrFail($id);
-        DomainCheck::create($domain->id);
-        flash(__('domains.has_been_checked'));
+        $result = PageAnalysisService::analyze($domain);
+
+        if ($result) {
+            flash(__('domains.has_been_checked'))->success();
+        } else {
+            flash(__('domains.something_went_wrong'))->error();
+        }
 
         return redirect()->route('domains.show', ['domain' => $domain->id]);
     }

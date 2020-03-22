@@ -18,7 +18,7 @@ class DomainTest extends TestCase
         DomainCheck::create($domainId);
         $route = route('domains.index');
 
-        $response = $this->withoutExceptionHandling()->get($route);
+        $response = $this->get($route);
         $response->assertStatus(200);
     }
 
@@ -52,13 +52,45 @@ class DomainTest extends TestCase
         $domainName = 'google.com';
         $domainId = Domain::create($domainName);
         $route = route('domains.check', ['id' => $domainId]);
-        $response = $this->withoutExceptionHandling()->post($route);
+        $response = $this->post($route);
 
         $redirectionRoute = route('domains.show', ['domain' => $domainId]);
         $response->assertRedirect($redirectionRoute);
 
         $this->assertDatabaseHas('domain_checks', [
             'domain_id' => $domainId,
+        ]);
+    }
+
+    public function testCheckDoesNotCreateRecordForNonExistentDomain()
+    {
+        $domainName = 'nonexistent.com';
+        $domainId = Domain::create($domainName);
+        $route = route('domains.check', ['id' => $domainId]);
+        $response = $this->post($route);
+
+        $redirectionRoute = route('domains.show', ['domain' => $domainId]);
+        $response->assertRedirect($redirectionRoute);
+
+        $this->assertDatabaseMissing('domain_checks', [
+            'domain_id' => $domainId,
+        ]);
+    }
+
+    public function testCheckCreatesRecordOnClientError()
+    {
+        $domainName = 'too-many-requests.com';
+        $domainId = Domain::create($domainName);
+        $route = route('domains.check', ['id' => $domainId]);
+        $response = $this->post($route);
+
+        $redirectionRoute = route('domains.show', ['domain' => $domainId]);
+        $response->assertRedirect($redirectionRoute);
+
+        $expectedStatusCode = 429;
+        $this->assertDatabaseHas('domain_checks', [
+            'domain_id' => $domainId,
+            'status_code' => $expectedStatusCode,
         ]);
     }
 
