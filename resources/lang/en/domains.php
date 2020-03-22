@@ -10,6 +10,9 @@ return [
     'updated_at' => 'Updated at',
     'status_code' => 'Status Code',
     'domains' => 'Domains',
+    'checks' => 'Checks',
+    'has_been_checked' => 'Website has been checked',
+    'run_check' => 'Run check',
     'already_exists' => 'Domain already exists',
     'url' => [
         'required' => 'URL is required',

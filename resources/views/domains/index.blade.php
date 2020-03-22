@@ -14,7 +14,11 @@
                     <tr>
                         <td>{{ $domain->id }}</td>
                         <td><a href="{{ route('domains.show', $domain->id) }}">https://{{ $domain->name }}</a></td>
-                        <td>200</td>
+                        @if (empty($domainChecks[$domain->id]))
+                            <td>&mdash;</td>
+                        @else
+                            <td>{{ $domainChecks[$domain->id]->status_code }}</td>
+                        @endif
                     </tr>
                 @endforeach
             </tbody></table>
