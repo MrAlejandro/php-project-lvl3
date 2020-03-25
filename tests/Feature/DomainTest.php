@@ -52,13 +52,17 @@ class DomainTest extends TestCase
         $domainName = 'google.com';
         $domainId = Domain::create($domainName);
         $route = route('domains.check', ['id' => $domainId]);
-        $response = $this->post($route);
+        $response = $this->withoutExceptionHandling()->post($route);
 
         $redirectionRoute = route('domains.show', ['domain' => $domainId]);
         $response->assertRedirect($redirectionRoute);
 
         $this->assertDatabaseHas('domain_checks', [
             'domain_id' => $domainId,
+            'status_code' => 200,
+            'h1' => 'Thank You For Helping Us!',
+            'keywords' => 'HTML,CSS,JavaScript,SQL,PHP,jQuery,XML,DOM,Bootstrap,Python,Java,Web development,W3C,tutorials,programming,training,learning,quiz,primer,lessons,references,examples,exercises,source code,colors,demos,tips',
+            'description' => 'Well organized and easy to understand Web building tutorials with lots of examples of how to use HTML, CSS, JavaScript, SQL, PHP, Python, Bootstrap, Java and XML.',
         ]);
     }
 

@@ -29,11 +29,21 @@
             <input type="submit" class="btn btn-primary" value="{{ __('domains.run_check') }}">
         </form>
         <table class="table">
+            <thead>
+                <th>{{ __('domain_checks.status_code') }}</th>
+                <th>{{ __('domain_checks.date') }}</th>
+                <th>{{ __('domain_checks.keywords') }}</th>
+                <th>{{ __('domain_checks.description') }}</th>
+                <th>{{ __('domain_checks.h1') }}</th>
+            </thead>
             <tbody>
                 @foreach ($domainChecks as $domainCheck)
                     <tr>
                         <td>{{ $domainCheck->status_code }}</td>
                         <td>{{ \App\Helpers\DateHelper::format($domainCheck->updated_at) }}</td>
+                        <td>{{ $domainCheck->keywords }}</td>
+                        <td>{{ $domainCheck->description }}</td>
+                        <td>{{ $domainCheck->h1 }}</td>
                     </tr>
                 @endforeach
             </tbody>
