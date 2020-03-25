@@ -12,11 +12,6 @@ class HttpClientProvider extends ServiceProvider
 {
     const MAX_REDIRECTS = 5;
 
-    /**
-     * Register services.
-     *
-     * @return void
-     */
     public function register()
     {
         if (App::environment() === 'testing') {
@@ -30,15 +25,5 @@ class HttpClientProvider extends ServiceProvider
         $this->app->bind('HttpClient', function () use ($config) {
             return new Client($config);
         });
-    }
-
-    /**
-     * Bootstrap services.
-     *
-     * @return void
-     */
-    public function boot()
-    {
-        //
     }
 }

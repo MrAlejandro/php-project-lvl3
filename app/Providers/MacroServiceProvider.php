@@ -8,11 +8,6 @@ use Illuminate\Database\Eloquent\ModelNotFoundException;
 
 class MacroServiceProvider extends ServiceProvider
 {
-    /**
-     * Register services.
-     *
-     * @return void
-     */
     public function register()
     {
         Builder::macro('findOrFail', function () {
@@ -22,15 +17,5 @@ class MacroServiceProvider extends ServiceProvider
 
             throw new ModelNotFoundException('No records found');
         });
-    }
-
-    /**
-     * Bootstrap services.
-     *
-     * @return void
-     */
-    public function boot()
-    {
-        //
     }
 }

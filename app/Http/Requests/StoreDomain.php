@@ -10,21 +10,11 @@ class StoreDomain extends FormRequest
 {
     protected $redirect;
 
-    /**
-     * Determine if the user is authorized to make this request.
-     *
-     * @return bool
-     */
     public function authorize()
     {
         return true;
     }
 
-    /**
-     * Prepare the data for validation.
-     *
-     * @return void
-     */
     protected function prepareForValidation()
     {
         $this->merge([
@@ -45,11 +35,6 @@ class StoreDomain extends FormRequest
         });
     }
 
-    /**
-     * Get the validation rules that apply to the request.
-     *
-     * @return array
-     */
     public function rules()
     {
         return [
@@ -75,11 +60,6 @@ class StoreDomain extends FormRequest
         $fail($nonUniqueDomainErrorMessage);
     }
 
-    /**
-     * Get the error messages for the defined validation rules.
-     *
-     * @return array
-     */
     public function messages()
     {
         return [
