@@ -3,7 +3,7 @@
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
-use App\Repositories\Domain;
+use App\Repositories\DomainRepository;
 use Closure;
 
 class StoreDomain extends FormRequest
@@ -49,7 +49,7 @@ class StoreDomain extends FormRequest
 
     public function validateDomainNameUniqueness($attribute, $value, $fail)
     {
-        $domain = Domain::findByDomainName($value);
+        $domain = DomainRepository::findByDomainName($value);
 
         if (empty($domain)) {
             return;

@@ -4,7 +4,7 @@ namespace Tests\Feature;
 
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use App\Repositories\DomainCheck;
-use App\Repositories\Domain;
+use App\Repositories\DomainRepository;
 use Tests\TestCase;
 
 class DomainTest extends TestCase
@@ -13,8 +13,8 @@ class DomainTest extends TestCase
 
     public function testIndex()
     {
-        Domain::create('yandex.ru');
-        $domainId = Domain::create('google.com');
+        DomainRepository::create('yandex.ru');
+        $domainId = DomainRepository::create('google.com');
         DomainCheck::create($domainId);
         $route = route('domains.index');
 
@@ -24,11 +24,11 @@ class DomainTest extends TestCase
 
     public function testShow()
     {
-        $domainId = Domain::create('google.com');
+        $domainId = DomainRepository::create('google.com');
         DomainCheck::create($domainId);
         $route = route('domains.show', ['domain' => $domainId]);
 
-        $response = $this->get($route);
+        $response = $this->withoutExceptionHandling()->get($route);
         $response->assertStatus(200);
     }
 
@@ -50,7 +50,7 @@ class DomainTest extends TestCase
     public function testCheck()
     {
         $domainName = 'google.com';
-        $domainId = Domain::create($domainName);
+        $domainId = DomainRepository::create($domainName);
         $route = route('domains.check', ['id' => $domainId]);
         $response = $this->withoutExceptionHandling()->post($route);
 
@@ -69,7 +69,7 @@ class DomainTest extends TestCase
     public function testCheckDoesNotCreateRecordForNonExistentDomain()
     {
         $domainName = 'nonexistent.com';
-        $domainId = Domain::create($domainName);
+        $domainId = DomainRepository::create($domainName);
         $route = route('domains.check', ['id' => $domainId]);
         $response = $this->post($route);
 
@@ -84,7 +84,7 @@ class DomainTest extends TestCase
     public function testCheckCreatesRecordOnClientError()
     {
         $domainName = 'too-many-requests.com';
-        $domainId = Domain::create($domainName);
+        $domainId = DomainRepository::create($domainName);
         $route = route('domains.check', ['id' => $domainId]);
         $response = $this->post($route);
 
@@ -101,7 +101,7 @@ class DomainTest extends TestCase
     public function testStoreRedirectsToExistingDomainIfNameNotUnique()
     {
         $domainName = 'google.com';
-        $domainId = Domain::create($domainName);
+        $domainId = DomainRepository::create($domainName);
 
         $url = 'http://google.com';
         $params = ['domain' => ['url' => $url]];

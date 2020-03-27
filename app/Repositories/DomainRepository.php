@@ -3,9 +3,10 @@
 namespace App\Repositories;
 
 use Illuminate\Support\Facades\DB;
+use App\Models\Domain;
 use Carbon\Carbon;
 
-class Domain
+class DomainRepository
 {
     const TABLE_NAME = 'domains';
 
@@ -16,9 +17,10 @@ class Domain
         return $domains;
     }
 
-    public static function findOrFail(int $id)
+    public static function findOrFail(int $id): Domain
     {
-        $domain = self::table()->where('id', $id)->findOrFail();
+        $rawDomain = self::table()->where('id', $id)->findOrFail();
+        $domain = self::rowToDomain($rawDomain);
 
         return $domain;
     }
@@ -43,5 +45,12 @@ class Domain
     protected static function table()
     {
         return DB::table(self::TABLE_NAME);
+    }
+
+    protected static function rowToDomain($row)
+    {
+        $domain = Domain::fromStdObject($row);
+
+        return $domain;
     }
 }

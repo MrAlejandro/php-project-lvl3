@@ -5,13 +5,13 @@ namespace App\Http\Controllers;
 use App\Http\Requests\StoreDomain;
 use App\Services\PageAnalysisService;
 use App\Repositories\DomainCheck;
-use App\Repositories\Domain;
+use App\Repositories\DomainRepository;
 
 class DomainController extends Controller
 {
     public function index()
     {
-        $domains = Domain::all();
+        $domains = DomainRepository::all();
         $domainIds = $domains->pluck('id')->toArray();
         $domainChecks = DomainCheck::latestForDomains($domainIds)->keyBy('domain_id');
 
@@ -20,7 +20,7 @@ class DomainController extends Controller
 
     public function show(int $id)
     {
-        $domain = Domain::findOrFail($id);
+        $domain = DomainRepository::findOrFail($id);
         $domainChecks = DomainCheck::allForDomainNewerFirst($id);
 
         return view('domains.show', ['domain' => $domain, 'domainChecks' => $domainChecks]);
@@ -29,14 +29,14 @@ class DomainController extends Controller
     public function store(StoreDomain $request)
     {
         $domainName = $request->domain['name'];
-        $domainId = Domain::create($domainName);
+        $domainId = DomainRepository::create($domainName);
 
         return redirect()->route('domains.show', ['domain' => $domainId]);
     }
 
     public function check(int $id)
     {
-        $domain = Domain::findOrFail($id);
+        $domain = DomainRepository::findOrFail($id);
         $result = PageAnalysisService::analyze($domain);
 
         if ($result) {

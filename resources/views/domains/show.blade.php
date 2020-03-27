@@ -15,11 +15,11 @@
                 </tr>
                 <tr>
                     <td>{{ __('domains.created_at') }}</td>
-                    <td>{{ \App\Helpers\DateHelper::format($domain->created_at) }}</td>
+                    <td>{{ \App\Helpers\DateHelper::format($domain->createdAt) }}</td>
                 </tr>
                 <tr>
                     <td>{{ __('domains.updated_at') }}</td>
-                    <td>{{ \App\Helpers\DateHelper::format($domain->updated_at) }}</td>
+                    <td>{{ \App\Helpers\DateHelper::format($domain->updatedAt) }}</td>
                 </tr>
             </tbody>
         </table>
