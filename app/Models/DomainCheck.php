@@ -15,7 +15,7 @@ class DomainCheck extends Base
     public $createdAt;
     public $updatedAt;
 
-    public static function fromArray(array $domainCheck)
+    public static function fromArray($domainCheck)
     {
         $model = new self();
 

@@ -2,45 +2,52 @@
 
 namespace App\Services;
 
+use ErrorException;
 use DiDom\Document;
-use App\Repositories\DomainCheckRepository;
-use GuzzleHttp\Exception\ClientException;
-use GuzzleHttp\Exception\ConnectException;
+use App\OperationResult;
 
 class PageAnalysisService
 {
-    public static function analyze($domain)
+    public static function analyze(string $pageHtml)
     {
-        $client = resolve('HttpClient');
-        $analysisData = ['keywords' => null, 'description' => null, 'h1' => null];
+        $operationResult = new OperationResult();
+        $analysisResult = collect(['h1' => null, 'keywords' => null, 'description' => null]);
+        $operationResult->succeed();
 
         try {
-            $response = $client->get($domain->name);
-            $statusCode = $response->getStatusCode();
-            $body = $response->getBody();
+            $document = new Document($pageHtml);
 
-            $document = new Document((string) $body);
+            $analysisResult->put('h1', self::extractH1TagContent($document));
+
             $metaTags = collect($document->find('meta'));
-            $keywords = $metaTags->first(function ($meta) {
-                $name = $meta->getAttribute('name');
-                return $name && strtolower($name) === 'keywords';
-            });
-            $analysisData['keywords'] = $keywords ? $keywords->getAttribute('content') : null;
-
-            $description = $metaTags->first(function ($meta) {
-                $name = $meta->getAttribute('name');
-                return $name && strtolower($name) === 'description';
-            });
-            $analysisData['description'] = $description ? $description->getAttribute('content') : null;
-
-            $h1 = collect($document->find('h1'))->first();
-            $analysisData['h1'] = $h1 ? $h1->innerHtml() : null;
-        } catch (ClientException $e) {
-            $statusCode = $e->getResponse()->getStatusCode();
-        } catch (ConnectException $e) {
-            return false;
+            $analysisResult->put('keywords', self::extractMetaTagContent($metaTags, 'keywords'));
+            $analysisResult->put('description', self::extractMetaTagContent($metaTags, 'description'));
+        } catch (ErrorException $e) {
+            $operationResult->fail();
         }
 
-        return DomainCheckRepository::create($domain->id, $statusCode, $analysisData);
+        $operationResult->setResult($analysisResult);
+
+        return $operationResult;
+    }
+
+    protected static function extractMetaTagContent($metaTags, $metaTagName)
+    {
+        $metaTag = $metaTags->first(function ($meta) use ($metaTagName) {
+            $name = $meta->getAttribute('name');
+            return $name && strtolower($name) === $metaTagName;
+        });
+
+        $metaTagContent = $metaTag ? $metaTag->getAttribute('content') : null;
+
+        return $metaTagContent;
+    }
+
+    protected static function extractH1TagContent($document)
+    {
+        $h1 = collect($document->find('h1'))->first();
+        $h1TagContent = $h1 ? $h1->innerHtml() : null;
+
+        return $h1TagContent;
     }
 }

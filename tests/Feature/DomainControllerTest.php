@@ -18,7 +18,7 @@ class DomainControllerTest extends TestCase
         static::$factory->create(DomainCheck::class, ['domainId' => $domain->id]);
         $route = route('domains.index');
 
-        $response = $this->withoutExceptionHandling()->get($route);
+        $response = $this->get($route);
         $response->assertStatus(200);
     }
 
@@ -80,7 +80,7 @@ class DomainControllerTest extends TestCase
         $invalidUrl = 'invalid-url';
         $params = ['page_url' => $invalidUrl];
 
-        $response = $this->withoutExceptionHandling()->post($route, $params);
+        $response = $this->post($route, $params);
         $response->assertStatus(302);
 
         $this->assertDatabaseMissing('domains', [
@@ -93,7 +93,7 @@ class DomainControllerTest extends TestCase
         $domainName = 'google.com';
         $domain = static::$factory->create(Domain::class, ['name' => $domainName]);
         $route = route('domains.check', ['id' => $domain->id]);
-        $response = $this->withoutExceptionHandling()->post($route);
+        $response = $this->post($route);
 
         $redirectionRoute = route('domains.show', ['domain' => $domain->id]);
         $response->assertRedirect($redirectionRoute);
@@ -127,7 +127,7 @@ class DomainControllerTest extends TestCase
         $domainName = 'too-many-requests.com';
         $domain = static::$factory->create(Domain::class, ['name' => $domainName]);
         $route = route('domains.check', ['id' => $domain->id]);
-        $response = $this->post($route);
+        $response = $this->withoutExceptionHandling()->post($route);
 
         $redirectionRoute = route('domains.show', ['domain' => $domain->id]);
         $response->assertRedirect($redirectionRoute);

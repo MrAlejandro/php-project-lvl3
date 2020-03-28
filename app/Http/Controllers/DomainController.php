@@ -3,8 +3,10 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Models\DomainCheck;
 use App\Forms\DomainCreateForm;
 use App\Services\PageAnalysisService;
+use App\Services\PageFetchingService;
 use App\Repositories\DomainRepository;
 use App\Repositories\DomainCheckRepository;
 
@@ -42,9 +44,20 @@ class DomainController extends Controller
     public function check(int $id)
     {
         $domain = DomainRepository::findOrFail($id);
-        $result = PageAnalysisService::analyze($domain);
 
-        if ($result) {
+        $fetchResult = PageFetchingService::fetch($domain->name);
+        if ($fetchResult->isSuccessful()) {
+            $body = $fetchResult->result->get('body');
+            $analysisResult = PageAnalysisService::analyze($body);
+
+            $domainCheck = $analysisResult
+                ->result
+                ->merge($fetchResult->result->except('body'))
+                ->put('domainId', $domain->id);
+
+            $domainCheck = DomainCheck::fromArray($domainCheck->toArray());
+            $domainCheck->save();
+
             flash(__('domains.has_been_checked'))->success();
         } else {
             flash(__('domains.something_went_wrong'))->error();
