@@ -57,6 +57,11 @@ class DomainRepository
         return $domainId;
     }
 
+    public static function delete(Domain $domain)
+    {
+        return self::table()->where('id', $domain->id)->delete();
+    }
+
     protected static function table()
     {
         return DB::table(self::TABLE_NAME);

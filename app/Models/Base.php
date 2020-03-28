@@ -4,8 +4,10 @@ namespace App\Models;
 
 use stdClass;
 
-class Base
+abstract class Base
 {
+    abstract public static function fromArray(array $data);
+
     public static function fromStdObject(stdClass $row)
     {
         $rawData = get_object_vars($row);
@@ -16,7 +18,7 @@ class Base
             })
             ->toArray();
 
-        $model = new static($camelizedRawData);
+        $model = static::fromArray($camelizedRawData);
 
         return $model;
     }
@@ -24,5 +26,27 @@ class Base
     public static function camelize($attribute, $separator = '_')
     {
         return lcfirst(str_replace($separator, '', ucwords($attribute, $separator)));
+    }
+
+    public function save()
+    {
+        $repository = $this->repositoryClassName();
+        $model = $repository::store($this);
+
+        return $model;
+    }
+
+    public function delete()
+    {
+        $repository = $this->repositoryClassName();
+        return $repository::delete($this);
+    }
+
+    private function repositoryClassName()
+    {
+        $modelClassName = collect(explode('\\', get_class($this)))->last();
+        $repositoryClassName = '\App\Repositories\\' . $modelClassName . 'Repository';
+
+        return $repositoryClassName;
     }
 }

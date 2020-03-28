@@ -30,8 +30,8 @@ class DomainController extends Controller
     public function store(StoreDomain $request)
     {
         $domainData = ['name' => $request->domain['name']];
-        $domain = new Domain($domainData);
-        $domain = DomainRepository::store($domain);
+        $domain = Domain::fromArray($domainData);
+        $domain->save();
 
         return redirect()->route('domains.show', ['domain' => $domain->id]);
     }

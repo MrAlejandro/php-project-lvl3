@@ -4,7 +4,7 @@ namespace Tests\Feature;
 
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use App\Repositories\DomainCheck;
-use App\Repositories\DomainRepository;
+use App\Models\Domain;
 use Tests\TestCase;
 
 class DomainTest extends TestCase
@@ -13,9 +13,9 @@ class DomainTest extends TestCase
 
     public function testIndex()
     {
-        DomainRepository::create('yandex.ru');
-        $domainId = DomainRepository::create('google.com');
-        DomainCheck::create($domainId);
+        static::$factory->create(Domain::class, ['name' => 'yandex.ru']);
+        $domain = static::$factory->create(Domain::class, ['name' => 'google.com']);
+        DomainCheck::create($domain->id);
         $route = route('domains.index');
 
         $response = $this->get($route);
@@ -24,9 +24,9 @@ class DomainTest extends TestCase
 
     public function testShow()
     {
-        $domainId = DomainRepository::create('google.com');
-        DomainCheck::create($domainId);
-        $route = route('domains.show', ['domain' => $domainId]);
+        $domain = static::$factory->create(Domain::class, ['name' => 'google.com']);
+        DomainCheck::create($domain->id);
+        $route = route('domains.show', ['domain' => $domain->id]);
 
         $response = $this->get($route);
         $response->assertStatus(200);
@@ -50,15 +50,15 @@ class DomainTest extends TestCase
     public function testCheck()
     {
         $domainName = 'google.com';
-        $domainId = DomainRepository::create($domainName);
-        $route = route('domains.check', ['id' => $domainId]);
+        $domain = static::$factory->create(Domain::class, ['name' => $domainName]);
+        $route = route('domains.check', ['id' => $domain->id]);
         $response = $this->withoutExceptionHandling()->post($route);
 
-        $redirectionRoute = route('domains.show', ['domain' => $domainId]);
+        $redirectionRoute = route('domains.show', ['domain' => $domain->id]);
         $response->assertRedirect($redirectionRoute);
 
         $this->assertDatabaseHas('domain_checks', [
-            'domain_id' => $domainId,
+            'domain_id' => $domain->id,
             'status_code' => 200,
             'h1' => 'Thank You For Helping Us!',
             'keywords' => 'HTML,CSS,JavaScript,SQL,PHP,jQuery,XML,DOM,Bootstrap,Python,Java,Web development,W3C,tutorials,programming,training,learning,quiz,primer,lessons,references,examples,exercises,source code,colors,demos,tips',
@@ -69,31 +69,31 @@ class DomainTest extends TestCase
     public function testCheckDoesNotCreateRecordForNonExistentDomain()
     {
         $domainName = 'nonexistent.com';
-        $domainId = DomainRepository::create($domainName);
-        $route = route('domains.check', ['id' => $domainId]);
+        $domain = static::$factory->create(Domain::class, ['name' => $domainName]);
+        $route = route('domains.check', ['id' => $domain->id]);
         $response = $this->post($route);
 
-        $redirectionRoute = route('domains.show', ['domain' => $domainId]);
+        $redirectionRoute = route('domains.show', ['domain' => $domain->id]);
         $response->assertRedirect($redirectionRoute);
 
         $this->assertDatabaseMissing('domain_checks', [
-            'domain_id' => $domainId,
+            'domain_id' => $domain->id,
         ]);
     }
 
     public function testCheckCreatesRecordOnClientError()
     {
         $domainName = 'too-many-requests.com';
-        $domainId = DomainRepository::create($domainName);
-        $route = route('domains.check', ['id' => $domainId]);
+        $domain = static::$factory->create(Domain::class, ['name' => $domainName]);
+        $route = route('domains.check', ['id' => $domain->id]);
         $response = $this->post($route);
 
-        $redirectionRoute = route('domains.show', ['domain' => $domainId]);
+        $redirectionRoute = route('domains.show', ['domain' => $domain->id]);
         $response->assertRedirect($redirectionRoute);
 
         $expectedStatusCode = 429;
         $this->assertDatabaseHas('domain_checks', [
-            'domain_id' => $domainId,
+            'domain_id' => $domain->id,
             'status_code' => $expectedStatusCode,
         ]);
     }
@@ -101,7 +101,7 @@ class DomainTest extends TestCase
     public function testStoreRedirectsToExistingDomainIfNameNotUnique()
     {
         $domainName = 'google.com';
-        $domainId = DomainRepository::create($domainName);
+        $domain = static::$factory->create(Domain::class, ['name' => $domainName]);
 
         $url = 'http://google.com';
         $params = ['domain' => ['url' => $url]];
@@ -109,7 +109,7 @@ class DomainTest extends TestCase
         $route = route('domains.store');
         $response = $this->post($route, $params);
 
-        $redirectionRoute = route('domains.show', ['domain' => $domainId]);
+        $redirectionRoute = route('domains.show', ['domain' => $domain->id]);
         $response->assertRedirect($redirectionRoute);
     }
 
