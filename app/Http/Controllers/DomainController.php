@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Domain;
 use App\Http\Requests\StoreDomain;
 use App\Services\PageAnalysisService;
 use App\Repositories\DomainCheck;
@@ -28,10 +29,11 @@ class DomainController extends Controller
 
     public function store(StoreDomain $request)
     {
-        $domainName = $request->domain['name'];
-        $domainId = DomainRepository::create($domainName);
+        $domainData = ['name' => $request->domain['name']];
+        $domain = new Domain($domainData);
+        $domain = DomainRepository::store($domain);
 
-        return redirect()->route('domains.show', ['domain' => $domainId]);
+        return redirect()->route('domains.show', ['domain' => $domain->id]);
     }
 
     public function check(int $id)

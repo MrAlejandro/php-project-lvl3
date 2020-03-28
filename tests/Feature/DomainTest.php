@@ -28,7 +28,7 @@ class DomainTest extends TestCase
         DomainCheck::create($domainId);
         $route = route('domains.show', ['domain' => $domainId]);
 
-        $response = $this->withoutExceptionHandling()->get($route);
+        $response = $this->get($route);
         $response->assertStatus(200);
     }
 

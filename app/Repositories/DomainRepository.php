@@ -25,9 +25,24 @@ class DomainRepository
         return $domain;
     }
 
-    public static function findByDomainName(string $domainName)
+    public static function findByDomainName(string $domainName): ?Domain
     {
-        $domain = self::table()->where('name', $domainName)->first();
+        $rawDomain = self::table()->where('name', $domainName)->first();
+        if (empty($rawDomain)) {
+            return null;
+        }
+
+        $domain = self::rowToDomain($rawDomain);
+
+        return $domain;
+    }
+
+    public static function store(Domain $domain): Domain
+    {
+        $domainId = self::table()->insertGetId(
+            ['name' => $domain->name, 'created_at' => $domain->createdAt, 'updated_at' => $domain->updatedAt]
+        );
+        $domain->id = $domainId;
 
         return $domain;
     }

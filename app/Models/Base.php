@@ -13,12 +13,10 @@ class Base
             ->keys()
             ->mapWithKeys(function ($attrName) use ($rawData) {
                 return [self::camelize($attrName) => $rawData[$attrName]];
-            });
+            })
+            ->toArray();
 
-        $model = new static();
-        $camelizedRawData->each(function ($attrValue, $attrName) use ($model) {
-            $model->$attrName = $attrValue;
-        });
+        $model = new static($camelizedRawData);
 
         return $model;
     }
