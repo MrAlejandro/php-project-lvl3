@@ -3,9 +3,10 @@
 namespace App\Repositories;
 
 use Illuminate\Support\Facades\DB;
+use App\Models\DomainCheck;
 use Carbon\Carbon;
 
-class DomainCheck
+class DomainCheckRepository
 {
     const TABLE_NAME = 'domain_checks';
 
@@ -31,6 +32,24 @@ class DomainCheck
             ->get();
 
         return $domainChecks;
+    }
+
+    public static function store(DomainCheck $domainCheck)
+    {
+        $domainCheckId = self::table()->insertGetId(
+            [
+                'domain_id' => $domainCheck->domainId,
+                'status_code' => $domainCheck->statusCode,
+                'keywords' => $domainCheck->keywords,
+                'description' => $domainCheck->description,
+                'h1' => $domainCheck->h1,
+                'created_at' => $domainCheck->createdAt,
+                'updated_at' => $domainCheck->updatedAt,
+            ]
+        );
+        $domainCheck->id = $domainCheckId;
+
+        return $domainCheck;
     }
 
     public static function create($domainId, $statusCode = 200, $analysisData = ['description' => null, 'keywords' => null, 'h1' => null])

@@ -3,7 +3,7 @@
 namespace Tests\Feature;
 
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use App\Repositories\DomainCheck;
+use App\Models\DomainCheck;
 use App\Models\Domain;
 use Tests\TestCase;
 
@@ -15,7 +15,7 @@ class DomainTest extends TestCase
     {
         static::$factory->create(Domain::class, ['name' => 'yandex.ru']);
         $domain = static::$factory->create(Domain::class, ['name' => 'google.com']);
-        DomainCheck::create($domain->id);
+        static::$factory->create(DomainCheck::class, ['domainId' => $domain->id]);
         $route = route('domains.index');
 
         $response = $this->get($route);
@@ -25,7 +25,7 @@ class DomainTest extends TestCase
     public function testShow()
     {
         $domain = static::$factory->create(Domain::class, ['name' => 'google.com']);
-        DomainCheck::create($domain->id);
+        static::$factory->create(DomainCheck::class, ['domainId' => $domain->id]);
         $route = route('domains.show', ['domain' => $domain->id]);
 
         $response = $this->get($route);

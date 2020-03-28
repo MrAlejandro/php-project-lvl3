@@ -3,7 +3,7 @@
 namespace App\Services;
 
 use DiDom\Document;
-use App\Repositories\DomainCheck;
+use App\Repositories\DomainCheckRepository;
 use GuzzleHttp\Exception\ClientException;
 use GuzzleHttp\Exception\ConnectException;
 
@@ -41,6 +41,6 @@ class PageAnalysisService
             return false;
         }
 
-        return DomainCheck::create($domain->id, $statusCode, $analysisData);
+        return DomainCheckRepository::create($domain->id, $statusCode, $analysisData);
     }
 }
