@@ -8,13 +8,13 @@ abstract class Base
 {
     abstract public static function fromArray(array $data);
 
-    public static function fromStdObject(stdClass $row)
+    public static function fromStdObject(stdClass $rawData)
     {
-        $rawData = get_object_vars($row);
-        $camelizedRawData = collect($rawData)
+        $modelData = collect(get_object_vars($rawData));
+        $camelizedRawData = $modelData
             ->keys()
-            ->mapWithKeys(function ($attrName) use ($rawData) {
-                return [self::camelize($attrName) => $rawData[$attrName]];
+            ->mapWithKeys(function ($attrName) use ($modelData) {
+                return [self::camelize($attrName) => $modelData->get($attrName)];
             })
             ->toArray();
 
@@ -34,12 +34,6 @@ abstract class Base
         $model = $repository::store($this);
 
         return $model;
-    }
-
-    public function delete()
-    {
-        $repository = $this->repositoryClassName();
-        return $repository::delete($this);
     }
 
     private function repositoryClassName()

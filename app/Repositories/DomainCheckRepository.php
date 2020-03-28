@@ -10,10 +10,10 @@ class DomainCheckRepository
 {
     const TABLE_NAME = 'domain_checks';
 
-    public static function allForDomainNewerFirst($domainId)
+    public static function allForDomainNewerFirst($domain)
     {
         $rawDomainChecks = self::table()
-            ->where('domain_id', $domainId)
+            ->where('domain_id', $domain->id)
             ->orderBy('updated_at', 'desc')
             ->get();
 
@@ -55,24 +55,6 @@ class DomainCheckRepository
         $domainCheck->id = $domainCheckId;
 
         return $domainCheck;
-    }
-
-    public static function create($domainId, $statusCode = 200, $analysisData = ['description' => null, 'keywords' => null, 'h1' => null])
-    {
-        $currentTime = Carbon::now();
-        $domainCheckId = self::table()->insertGetId(
-            [
-                'domain_id' => $domainId,
-                'status_code' => $statusCode,
-                'keywords' => $analysisData['keywords'],
-                'description' => $analysisData['description'],
-                'h1' => $analysisData['h1'],
-                'created_at' => $currentTime,
-                'updated_at' => $currentTime,
-            ]
-        );
-
-        return $domainCheckId;
     }
 
     protected static function table()

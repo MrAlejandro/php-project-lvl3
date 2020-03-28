@@ -23,7 +23,7 @@ class DomainController extends Controller
     public function show(int $id)
     {
         $domain = DomainRepository::findOrFail($id);
-        $domainChecks = DomainCheckRepository::allForDomainNewerFirst($id);
+        $domainChecks = DomainCheckRepository::allForDomainNewerFirst($domain);
 
         return view('domains.show', ['domain' => $domain, 'domainChecks' => $domainChecks]);
     }

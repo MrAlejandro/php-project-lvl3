@@ -21,7 +21,7 @@ class MockHandler
         $responseFilePath = join(DIRECTORY_SEPARATOR, [__DIR__, '..', 'Fixtures', 'HttpResponses', $responseFileName]);
 
         if (file_exists($responseFilePath)) {
-            list($statusCode, $headers, $body) = require($responseFilePath);
+            [$statusCode, $headers, $body] = require($responseFilePath);
             $response = new Response($statusCode, $headers, $body);
 
             $promise = $this->isSuccessfulStatusCode($statusCode)

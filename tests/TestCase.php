@@ -16,16 +16,4 @@ abstract class TestCase extends BaseTestCase
         static::$factory = new FactoryMuffin();
         static::$factory->loadFactories(__DIR__ . '/Factories');
     }
-
-    /* public function tearDown(): void */
-    /* { */
-    /*     static::$fm->deleteSaved(); */
-    /*     dump(123123); */
-    /*     die; */
-    /*     parent::tearDown(); */
-    /* } */
-    /* public static function tearDownAfterClass(): void */
-    /* { */
-    /*     static::$fm->deleteSaved(); */
-    /* } */
 }
