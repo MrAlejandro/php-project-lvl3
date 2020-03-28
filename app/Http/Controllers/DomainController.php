@@ -13,8 +13,7 @@ class DomainController extends Controller
     public function index()
     {
         $domains = DomainRepository::all();
-        $domainIds = $domains->pluck('id')->toArray();
-        $domainChecks = DomainCheckRepository::latestForDomains($domainIds)->keyBy('domain_id');
+        $domainChecks = DomainCheckRepository::latestForDomains($domains)->keyBy('domainId');
 
         return view('domains.index', ['domains' => $domains, 'domainChecks' => $domainChecks]);
     }

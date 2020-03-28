@@ -12,7 +12,10 @@ class DomainRepository
 
     public static function all()
     {
-        $domains = self::table()->get();
+        $rawDomains = self::table()->get();
+        $domains = $rawDomains->map(function ($rawDomain) {
+            return self::rowToDomain($rawDomain);
+        });
 
         return $domains;
     }

@@ -12,17 +12,20 @@ class DomainCheckRepository
 
     public static function allForDomainNewerFirst($domainId)
     {
-        $domainChecks = self::table()
+        $rawDomainChecks = self::table()
             ->where('domain_id', $domainId)
             ->orderBy('updated_at', 'desc')
             ->get();
 
+        $domainChecks = self::rawCollectionToDomainChecks($rawDomainChecks);
+
         return $domainChecks;
     }
 
-    public static function latestForDomains($domainIds)
+    public static function latestForDomains($domains)
     {
-        $domainChecks = self::table()
+        $domainIds = $domains->pluck('id')->toArray();
+        $rawDomainChecks = self::table()
             ->whereIn('id', function ($query) {
                 $query->select(DB::raw('MAX(id) AS id'))
                     ->from(self::TABLE_NAME)
@@ -30,6 +33,8 @@ class DomainCheckRepository
             })
             ->whereIn('domain_id', $domainIds)
             ->get();
+
+        $domainChecks = self::rawCollectionToDomainChecks($rawDomainChecks);
 
         return $domainChecks;
     }
@@ -73,5 +78,21 @@ class DomainCheckRepository
     protected static function table()
     {
         return DB::table(self::TABLE_NAME);
+    }
+
+    protected static function rawCollectionToDomainChecks($rawDomainChecks)
+    {
+        $domainChecks = $rawDomainChecks->map(function ($rawDomainCheck) {
+            return self::rawToDomainCheck($rawDomainCheck);
+        });
+
+        return $domainChecks;
+    }
+
+    protected static function rawToDomainCheck($raw)
+    {
+        $domain = DomainCheck::fromStdObject($raw);
+
+        return $domain;
     }
 }

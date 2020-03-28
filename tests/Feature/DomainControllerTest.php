@@ -7,7 +7,7 @@ use App\Models\DomainCheck;
 use App\Models\Domain;
 use Tests\TestCase;
 
-class DomainTest extends TestCase
+class DomainControllerTest extends TestCase
 {
     use RefreshDatabase;
 
@@ -18,7 +18,7 @@ class DomainTest extends TestCase
         static::$factory->create(DomainCheck::class, ['domainId' => $domain->id]);
         $route = route('domains.index');
 
-        $response = $this->get($route);
+        $response = $this->withoutExceptionHandling()->get($route);
         $response->assertStatus(200);
     }
 

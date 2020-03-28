@@ -39,8 +39,8 @@
             <tbody>
                 @foreach ($domainChecks as $domainCheck)
                     <tr>
-                        <td>{{ $domainCheck->status_code }}</td>
-                        <td>{{ \App\Helpers\DateHelper::format($domainCheck->updated_at) }}</td>
+                        <td>{{ $domainCheck->statusCode }}</td>
+                        <td>{{ \App\Helpers\DateHelper::format($domainCheck->updatedAt) }}</td>
                         <td>{{ $domainCheck->keywords }}</td>
                         <td>{{ $domainCheck->description }}</td>
                         <td>{{ $domainCheck->h1 }}</td>

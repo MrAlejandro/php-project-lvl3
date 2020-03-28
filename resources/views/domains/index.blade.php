@@ -17,7 +17,7 @@
                         @if (empty($domainChecks[$domain->id]))
                             <td>&mdash;</td>
                         @else
-                            <td>{{ $domainChecks[$domain->id]->status_code }}</td>
+                            <td>{{ $domainChecks[$domain->id]->statusCode }}</td>
                         @endif
                     </tr>
                 @endforeach
