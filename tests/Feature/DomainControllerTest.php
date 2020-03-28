@@ -35,15 +35,56 @@ class DomainControllerTest extends TestCase
     public function testStore()
     {
         $route = route('domains.store');
-        $url = 'http://google.com';
-        $params = ['domain' => ['url' => $url]];
+        $url = 'http://google.com/some-extra-data';
+        $params = ['page_url' => $url];
 
         $response = $this->post($route, $params);
         $response->assertStatus(302);
 
-        $domainName = 'google.com';
         $this->assertDatabaseHas('domains', [
-            'name' => $domainName,
+            'name' => 'google.com',
+        ]);
+    }
+
+    public function testStoreRedirectsToExistingDomainIfNameNotUnique()
+    {
+        $domainName = 'google.com';
+        $domain = static::$factory->create(Domain::class, ['name' => $domainName]);
+
+        $url = 'http://google.com';
+        $params = ['page_url' => $url];
+
+        $route = route('domains.store');
+        $response = $this->post($route, $params);
+
+        $redirectionRoute = route('domains.show', ['domain' => $domain->id]);
+        $response->assertRedirect($redirectionRoute);
+    }
+
+    public function testStoreDoesNotCreateRecordWithEmptyUrl()
+    {
+        $route = route('domains.store');
+        $params = ['page_url' => ''];
+
+        $response = $this->post($route, $params);
+        $response->assertStatus(302);
+
+        $this->assertDatabaseMissing('domains', [
+            'name' => '',
+        ]);
+    }
+
+    public function testStoreDoesNotCreateRecordWithInvalidUrl()
+    {
+        $route = route('domains.store');
+        $invalidUrl = 'invalid-url';
+        $params = ['page_url' => $invalidUrl];
+
+        $response = $this->withoutExceptionHandling()->post($route, $params);
+        $response->assertStatus(302);
+
+        $this->assertDatabaseMissing('domains', [
+            'name' => $invalidUrl,
         ]);
     }
 
@@ -95,47 +136,6 @@ class DomainControllerTest extends TestCase
         $this->assertDatabaseHas('domain_checks', [
             'domain_id' => $domain->id,
             'status_code' => $expectedStatusCode,
-        ]);
-    }
-
-    public function testStoreRedirectsToExistingDomainIfNameNotUnique()
-    {
-        $domainName = 'google.com';
-        $domain = static::$factory->create(Domain::class, ['name' => $domainName]);
-
-        $url = 'http://google.com';
-        $params = ['domain' => ['url' => $url]];
-
-        $route = route('domains.store');
-        $response = $this->post($route, $params);
-
-        $redirectionRoute = route('domains.show', ['domain' => $domain->id]);
-        $response->assertRedirect($redirectionRoute);
-    }
-
-    public function testStoreDoesNotCreateRecordWithEmptyName()
-    {
-        $route = route('domains.store');
-        $params = ['domain' => ['url' => '']];
-
-        $response = $this->post($route, $params);
-        $response->assertStatus(302);
-
-        $this->assertDatabaseMissing('domains', [
-            'name' => '',
-        ]);
-    }
-
-    public function testStoreDoesNotCreateRecordWithInvalidName()
-    {
-        $route = route('domains.store');
-        $params = ['domain' => ['url' => '']];
-
-        $response = $this->post($route, $params);
-        $response->assertStatus(302);
-
-        $this->assertDatabaseMissing('domains', [
-            'name' => '',
         ]);
     }
 }

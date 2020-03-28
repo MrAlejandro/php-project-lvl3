@@ -2,8 +2,8 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Domain;
-use App\Http\Requests\StoreDomain;
+use Illuminate\Http\Request;
+use App\Forms\DomainCreateForm;
 use App\Services\PageAnalysisService;
 use App\Repositories\DomainRepository;
 use App\Repositories\DomainCheckRepository;
@@ -26,13 +26,17 @@ class DomainController extends Controller
         return view('domains.show', ['domain' => $domain, 'domainChecks' => $domainChecks]);
     }
 
-    public function store(StoreDomain $request)
+    public function store(Request $request)
     {
-        $domainData = ['name' => $request->domain['name']];
-        $domain = Domain::fromArray($domainData);
-        $domain->save();
+        $domainCreateForm = new DomainCreateForm($request);
 
-        return redirect()->route('domains.show', ['domain' => $domain->id]);
+        if ($domainCreateForm->isValid()) {
+            $domain = $domainCreateForm->create();
+            return redirect()->route('domains.show', ['domain' => $domain->id]);
+        }
+
+        $domainCreateForm->showErrors();
+        return redirect($domainCreateForm->redirectUrl);
     }
 
     public function check(int $id)

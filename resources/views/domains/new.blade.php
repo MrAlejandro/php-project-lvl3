@@ -9,7 +9,7 @@
 
             <form action="{{ route('domains.store') }}" method="post" class="d-flex justify-content-center form-inline">
                 @csrf
-                <input type="text" name="domain[url]" class="form-control form-control-lg" placeholder="https://www.example.com">
+                <input type="text" name="page_url" class="form-control form-control-lg" placeholder="https://www.example.com">
                 <button type="submit" class="btn btn-lg btn-primary ml-3">{{ __("domains.add") }}</button>
             </form>
         </div>
