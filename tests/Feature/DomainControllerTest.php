@@ -36,7 +36,7 @@ class DomainControllerTest extends TestCase
     public function testStore()
     {
         $route = route('domains.store');
-        $params = ['page_url' => 'http://google.com/some-extra-data'];
+        $params = ['page_url' => 'http://google.com/some-extra-path'];
 
         $response = $this->post($route, $params);
         $response->assertStatus(302);

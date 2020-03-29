@@ -31,18 +31,18 @@ class AnalyzePageJob implements ShouldQueue
     public function handle()
     {
         $domain = DomainRepository::findOrFail($this->domainId);
-        $fetchResult = PageFetchingService::fetch($domain->name);
+        $fetchedResult = PageFetchingService::fetch($domain->name);
 
-        if (!$fetchResult->isSuccessful()) {
+        if (!$fetchedResult->isSuccessful()) {
             return;
         }
 
-        $body = $fetchResult->getResult()->get('body');
-        $analysisResult = PageAnalysisService::analyze($body);
+        $html = $fetchedResult->getResult()->get('html');
+        $analysisResult = PageAnalysisService::analyze($html);
 
         $domainCheck = $analysisResult
             ->getResult()
-            ->merge($fetchResult->getResult()->except('body'))
+            ->merge($fetchedResult->getResult()->except('html'))
             ->put('domainId', $domain->id);
 
         $domainCheck = DomainCheck::initializeWith($domainCheck);

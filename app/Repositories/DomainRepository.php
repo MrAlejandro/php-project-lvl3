@@ -2,15 +2,16 @@
 
 namespace App\Repositories;
 
+use Illuminate\Database\Query\Builder;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Collection;
 use App\Models\Domain;
-use Carbon\Carbon;
 
 class DomainRepository
 {
     const TABLE_NAME = 'domains';
 
-    public static function all()
+    public static function all(): Collection
     {
         $rawDomains = self::table()->get();
         $domains = $rawDomains->map(function ($rawDomain) {
@@ -50,17 +51,12 @@ class DomainRepository
         return $domain;
     }
 
-    public static function delete(Domain $domain)
-    {
-        return self::table()->where('id', $domain->id)->delete();
-    }
-
-    protected static function table()
+    protected static function table(): Builder
     {
         return DB::table(self::TABLE_NAME);
     }
 
-    protected static function rawToDomain($row)
+    protected static function rawToDomain($row): Domain
     {
         $domain = Domain::fromStdObject($row);
 

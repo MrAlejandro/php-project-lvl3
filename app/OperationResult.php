@@ -7,22 +7,22 @@ class OperationResult
     protected $result;
     protected $isSuccessful;
 
-    public function succeed()
+    public function succeed(): void
     {
         $this->isSuccessful = true;
     }
 
-    public function fail()
+    public function fail(): void
     {
         $this->isSuccessful = false;
     }
 
-    public function isSuccessful()
+    public function isSuccessful(): bool
     {
         return $this->isSuccessful;
     }
 
-    public function setResult($result)
+    public function setResult($result): void
     {
         $this->result = $result;
     }

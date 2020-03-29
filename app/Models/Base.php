@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use stdClass;
+use Illuminate\Support\Str;
 use Illuminate\Support\Collection;
 
 abstract class Base
@@ -12,20 +13,15 @@ abstract class Base
     public static function fromStdObject(stdClass $rawData)
     {
         $modelData = collect(get_object_vars($rawData));
-        $camelizedRawData = $modelData
+        $camelizedModelData = $modelData
             ->keys()
             ->mapWithKeys(function ($attrName) use ($modelData) {
-                return [self::camelize($attrName) => $modelData->get($attrName)];
+                return [Str::camel($attrName) => $modelData->get($attrName)];
             });
 
-        $model = static::initializeWith($camelizedRawData);
+        $model = static::initializeWith($camelizedModelData);
 
         return $model;
-    }
-
-    public static function camelize($attribute, $separator = '_')
-    {
-        return lcfirst(str_replace($separator, '', ucwords($attribute, $separator)));
     }
 
     public function save()
@@ -36,7 +32,7 @@ abstract class Base
         return $model;
     }
 
-    private function repositoryClassName()
+    private function repositoryClassName(): string
     {
         $modelClassName = collect(explode('\\', get_class($this)))->last();
         $repositoryClassName = '\App\Repositories\\' . $modelClassName . 'Repository';
