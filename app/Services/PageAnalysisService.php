@@ -46,7 +46,7 @@ class PageAnalysisService
     protected static function extractH1TagContent($document)
     {
         $h1 = collect($document->find('h1'))->first();
-        $h1TagContent = $h1 ? $h1->innerHtml() : null;
+        $h1TagContent = $h1->innerHtml() ?? null;
 
         return $h1TagContent;
     }

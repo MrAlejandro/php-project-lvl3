@@ -10,8 +10,8 @@ use Illuminate\Support\Facades\Validator;
 
 class DomainCreateForm
 {
-    public $errors = [];
-    public $redirectUrl = '/';
+    protected $errors = [];
+    protected $redirectRoute = '/';
 
     protected $pageUrl;
 
@@ -56,9 +56,19 @@ class DomainCreateForm
     {
         $domainData = ['name' => $this->domainName];
         $domain = Domain::fromArray($domainData);
-        $domain->save();
+        $domain = DomainRepository::store($domain);
 
         return $domain;
+    }
+
+    public function getErrors()
+    {
+        return $this->errors;
+    }
+
+    public function getRedirectRoute()
+    {
+        return $this->redirectRoute;
     }
 
     private function validateDomainNameUniqueness($attribute, $value, $fail)
@@ -69,7 +79,7 @@ class DomainCreateForm
             return;
         }
 
-        $this->redirectUrl = route('domains.show', ['domain' => $domain->id]);
+        $this->redirectRoute = route('domains.show', ['domain' => $domain->id]);
         $nonUniqueDomainErrorMessage = __('domains.already_exists');
         $fail($nonUniqueDomainErrorMessage);
     }

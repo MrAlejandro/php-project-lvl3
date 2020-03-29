@@ -38,7 +38,9 @@ class DomainController extends Controller
         }
 
         $domainCreateForm->showErrors();
-        return redirect($domainCreateForm->redirectUrl);
+        $redirectRoute = $domainCreateForm->getRedirectRoute();
+
+        return redirect($redirectRoute);
     }
 
     public function check(int $id)
@@ -47,16 +49,16 @@ class DomainController extends Controller
 
         $fetchResult = PageFetchingService::fetch($domain->name);
         if ($fetchResult->isSuccessful()) {
-            $body = $fetchResult->result->get('body');
+            $body = $fetchResult->getResult()->get('body');
             $analysisResult = PageAnalysisService::analyze($body);
 
             $domainCheck = $analysisResult
-                ->result
-                ->merge($fetchResult->result->except('body'))
+                ->getResult()
+                ->merge($fetchResult->getResult()->except('body'))
                 ->put('domainId', $domain->id);
 
             $domainCheck = DomainCheck::fromArray($domainCheck->toArray());
-            $domainCheck->save();
+            DomainCheckRepository::store($domainCheck);
 
             flash(__('domains.has_been_checked'))->success();
         } else {

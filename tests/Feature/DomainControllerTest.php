@@ -15,7 +15,6 @@ class DomainControllerTest extends TestCase
 
     public function testIndex()
     {
-        static::$factory->create(Domain::class, ['name' => 'yandex.ru']);
         $domain = static::$factory->create(Domain::class, ['name' => 'google.com']);
         static::$factory->create(DomainCheck::class, ['domainId' => $domain->id]);
         $route = route('domains.index');
@@ -37,8 +36,7 @@ class DomainControllerTest extends TestCase
     public function testStore()
     {
         $route = route('domains.store');
-        $url = 'http://google.com/some-extra-data';
-        $params = ['page_url' => $url];
+        $params = ['page_url' => 'http://google.com/some-extra-data'];
 
         $response = $this->post($route, $params);
         $response->assertStatus(302);
@@ -50,13 +48,10 @@ class DomainControllerTest extends TestCase
 
     public function testStoreRedirectsToExistingDomainIfNameNotUnique()
     {
-        $domainName = 'google.com';
-        $domain = static::$factory->create(Domain::class, ['name' => $domainName]);
-
-        $url = 'http://google.com';
-        $params = ['page_url' => $url];
-
+        $domain = static::$factory->create(Domain::class, ['name' => 'google.com']);
+        $params = ['page_url' => 'http://google.com'];
         $route = route('domains.store');
+
         $response = $this->post($route, $params);
 
         $redirectionRoute = route('domains.show', ['domain' => $domain->id]);
@@ -78,9 +73,9 @@ class DomainControllerTest extends TestCase
 
     public function testStoreDoesNotCreateRecordWithInvalidUrl()
     {
-        $route = route('domains.store');
         $invalidUrl = 'invalid-url';
         $params = ['page_url' => $invalidUrl];
+        $route = route('domains.store');
 
         $response = $this->post($route, $params);
         $response->assertStatus(302);
@@ -95,6 +90,7 @@ class DomainControllerTest extends TestCase
         $domainName = 'google.com';
         $domain = static::$factory->create(Domain::class, ['name' => $domainName]);
         $route = route('domains.check', ['id' => $domain->id]);
+
         $response = $this->post($route);
 
         $redirectionRoute = route('domains.show', ['domain' => $domain->id]);
@@ -113,9 +109,9 @@ class DomainControllerTest extends TestCase
 
     public function testCheckDoesNotCreateRecordForNonExistentDomain()
     {
-        $domainName = 'nonexistent.com';
-        $domain = static::$factory->create(Domain::class, ['name' => $domainName]);
+        $domain = static::$factory->create(Domain::class, ['name' => 'nonexistent.com']);
         $route = route('domains.check', ['id' => $domain->id]);
+
         $response = $this->post($route);
 
         $redirectionRoute = route('domains.show', ['domain' => $domain->id]);

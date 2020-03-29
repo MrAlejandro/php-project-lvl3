@@ -4,8 +4,7 @@ namespace App;
 
 class OperationResult
 {
-    public $result;
-
+    protected $result;
     protected $isSuccessful;
 
     public function succeed()
@@ -26,5 +25,10 @@ class OperationResult
     public function setResult($result)
     {
         $this->result = $result;
+    }
+
+    public function getResult()
+    {
+        return $this->result;
     }
 }
