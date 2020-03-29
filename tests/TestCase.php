@@ -14,6 +14,6 @@ abstract class TestCase extends BaseTestCase
     public static function setupBeforeClass(): void
     {
         static::$factory = new FactoryMuffin();
-        static::$factory->loadFactories(__DIR__ . '/Factories');
+        static::$factory->loadFactories(__DIR__ . '/factories');
     }
 }

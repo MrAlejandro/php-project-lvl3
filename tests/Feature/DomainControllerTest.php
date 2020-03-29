@@ -3,6 +3,7 @@
 namespace Tests\Feature;
 
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Tests\Support\FixturesSupport;
 use App\Models\DomainCheck;
 use App\Models\Domain;
 use Tests\TestCase;
@@ -10,6 +11,7 @@ use Tests\TestCase;
 class DomainControllerTest extends TestCase
 {
     use RefreshDatabase;
+    use FixturesSupport;
 
     public function testIndex()
     {
@@ -98,12 +100,14 @@ class DomainControllerTest extends TestCase
         $redirectionRoute = route('domains.show', ['domain' => $domain->id]);
         $response->assertRedirect($redirectionRoute);
 
+        $expectedDomainAttributes = $this->getExpectedDomainCheckAttributesFor($domainName);
+
         $this->assertDatabaseHas('domain_checks', [
             'domain_id' => $domain->id,
-            'status_code' => 200,
-            'h1' => 'Thank You For Helping Us!',
-            'keywords' => 'HTML,CSS,JavaScript,SQL,PHP,jQuery,XML,DOM,Bootstrap,Python,Java,Web development,W3C,tutorials,programming,training,learning,quiz,primer,lessons,references,examples,exercises,source code,colors,demos,tips',
-            'description' => 'Well organized and easy to understand Web building tutorials with lots of examples of how to use HTML, CSS, JavaScript, SQL, PHP, Python, Bootstrap, Java and XML.',
+            'status_code' => $expectedDomainAttributes['statusCode'],
+            'h1' => $expectedDomainAttributes['h1'],
+            'keywords' => $expectedDomainAttributes['keywords'],
+            'description' => $expectedDomainAttributes['description'],
         ]);
     }
 
@@ -132,10 +136,11 @@ class DomainControllerTest extends TestCase
         $redirectionRoute = route('domains.show', ['domain' => $domain->id]);
         $response->assertRedirect($redirectionRoute);
 
-        $expectedStatusCode = 429;
+        $expectedDomainAttributes = $this->getExpectedDomainCheckAttributesFor($domainName);
+
         $this->assertDatabaseHas('domain_checks', [
             'domain_id' => $domain->id,
-            'status_code' => $expectedStatusCode,
+            'status_code' => $expectedDomainAttributes['statusCode'],
         ]);
     }
 }
