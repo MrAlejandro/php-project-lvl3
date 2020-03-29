@@ -11,10 +11,9 @@ return [
     'status_code' => 'Status Code',
     'domains' => 'Domains',
     'checks' => 'Checks',
-    'has_been_checked' => 'Website has been checked',
     'run_check' => 'Run check',
     'already_exists' => 'Domain already exists',
-    'something_went_wrong' => 'Something went wrong',
+    'analysis_was_scheduled' => 'The analysis was scheduled',
     'url' => [
         'required' => 'URL is required',
         'invalid' => 'Not a valid URL',
