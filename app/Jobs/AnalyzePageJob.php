@@ -15,7 +15,10 @@ use App\Repositories\DomainCheckRepository;
 
 class AnalyzePageJob implements ShouldQueue
 {
-    use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
+    use Dispatchable;
+    use InteractsWithQueue;
+    use Queueable;
+    use SerializesModels;
 
     public $tries = 1;
     protected $domainId;
