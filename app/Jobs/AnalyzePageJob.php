@@ -45,7 +45,7 @@ class AnalyzePageJob implements ShouldQueue
             ->merge($fetchResult->getResult()->except('body'))
             ->put('domainId', $domain->id);
 
-        $domainCheck = DomainCheck::fromArray($domainCheck->toArray());
+        $domainCheck = DomainCheck::initializeWith($domainCheck);
         DomainCheckRepository::store($domainCheck);
     }
 }

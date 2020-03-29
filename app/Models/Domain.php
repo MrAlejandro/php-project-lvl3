@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Carbon\Carbon;
+use Illuminate\Support\Collection;
 
 class Domain extends Base
 {
@@ -11,14 +12,14 @@ class Domain extends Base
     public $createdAt;
     public $updatedAt;
 
-    public static function fromArray(array $domain)
+    public static function initializeWith(Collection $domain): Domain
     {
         $model = new self();
 
-        $model->id = $domain['id'] ?? null;
-        $model->name = $domain['name'] ?? null;
-        $model->createdAt = $domain['createdAt'] ?? Carbon::now();
-        $model->updatedAt = $domain['updatedAt'] ?? Carbon::now();
+        $model->id = $domain->get('id', null);
+        $model->name = $domain->get('name', null);
+        $model->createdAt = $domain->get('createdAt', Carbon::now());
+        $model->updatedAt = $domain->get('updatedAt', Carbon::now());
 
         return $model;
     }

@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Carbon\Carbon;
+use Illuminate\Support\Collection;
 
 class DomainCheck extends Base
 {
@@ -15,18 +16,18 @@ class DomainCheck extends Base
     public $createdAt;
     public $updatedAt;
 
-    public static function fromArray($domainCheck)
+    public static function initializeWith(Collection $domainCheck)
     {
         $model = new self();
 
-        $model->id = $domainCheck['id'] ?? null;
-        $model->domainId = $domainCheck['domainId'] ?? null;
-        $model->statusCode = $domainCheck['statusCode'] ?? null;
-        $model->keywords = $domainCheck['keywords'] ?? null;
-        $model->description = $domainCheck['description'] ?? null;
-        $model->h1 = $domainCheck['h1'] ?? null;
-        $model->createdAt = $domainCheck['createdAt'] ?? Carbon::now();
-        $model->updatedAt = $domainCheck['updatedAt'] ?? Carbon::now();
+        $model->id = $domainCheck->get('id', null);
+        $model->h1 = $domainCheck->get('h1', null);
+        $model->domainId = $domainCheck->get('domainId', null);
+        $model->statusCode = $domainCheck->get('statusCode', null);
+        $model->description = $domainCheck->get('description', null);
+        $model->keywords = $domainCheck->get('keywords', null);
+        $model->createdAt = $domainCheck->get('createdAt', Carbon::now());
+        $model->updatedAt = $domainCheck->get('updatedAt', Carbon::now());
 
         return $model;
     }

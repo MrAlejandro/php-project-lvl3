@@ -12,7 +12,6 @@ class DomainCreateForm
 {
     protected $errors = [];
     protected $redirectRoute = '/';
-
     protected $pageUrl;
 
     public function __construct(Request $request)
@@ -54,8 +53,8 @@ class DomainCreateForm
 
     public function create()
     {
-        $domainData = ['name' => $this->domainName];
-        $domain = Domain::fromArray($domainData);
+        $domainData = collect(['name' => $this->domainName]);
+        $domain = Domain::initializeWith($domainData);
         $domain = DomainRepository::store($domain);
 
         return $domain;

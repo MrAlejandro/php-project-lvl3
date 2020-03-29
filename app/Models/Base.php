@@ -3,10 +3,11 @@
 namespace App\Models;
 
 use stdClass;
+use Illuminate\Support\Collection;
 
 abstract class Base
 {
-    abstract public static function fromArray(array $data);
+    abstract public static function initializeWith(Collection $data);
 
     public static function fromStdObject(stdClass $rawData)
     {
@@ -15,10 +16,9 @@ abstract class Base
             ->keys()
             ->mapWithKeys(function ($attrName) use ($modelData) {
                 return [self::camelize($attrName) => $modelData->get($attrName)];
-            })
-            ->toArray();
+            });
 
-        $model = static::fromArray($camelizedRawData);
+        $model = static::initializeWith($camelizedRawData);
 
         return $model;
     }
