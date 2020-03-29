@@ -7,7 +7,7 @@ trait FixturesSupport
     public function getExpectedDomainCheckAttributesFor(string $domainName)
     {
         $fileName = $domainName . '.php';
-        $filePath = join(DIRECTORY_SEPARATOR, [__DIR__, '..', 'fixtures', 'HttpResponses', $fileName]);
+        $filePath = join(DIRECTORY_SEPARATOR, [__DIR__, '..', 'Fixtures', 'HttpResponses', $fileName]);
         $attributes = [];
 
         if (file_exists($filePath)) {
