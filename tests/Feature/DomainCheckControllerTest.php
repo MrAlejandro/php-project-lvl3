@@ -24,12 +24,12 @@ class DomainCheckControllerTest extends TestCase
         $redirectionRoute = route('domains.show', $domain);
         $response->assertRedirect($redirectionRoute);
 
-        $expectedDomainAttributes = $this
+        $expectedAttributes = $this
             ->getExpectedDomainCheckAttributesFor($domainName)
             ->merge(['domain_id' => $domain->id])
             ->toArray();
 
-        $this->assertDatabaseHas('domain_checks', $expectedDomainAttributes);
+        $this->assertDatabaseHas('domain_checks', $expectedAttributes);
     }
 
     public function testStoreDoesNotCreateRecordForNonExistentDomain()
@@ -57,12 +57,12 @@ class DomainCheckControllerTest extends TestCase
         $redirectionRoute = route('domains.show', $domain);
         $response->assertRedirect($redirectionRoute);
 
-        $expectedDomainAttributes = $this
+        $expectedAttributes = $this
             ->getExpectedDomainCheckAttributesFor($domainName)
             ->only('status_code')
             ->merge(['domain_id' => $domain->id])
             ->toArray();
 
-        $this->assertDatabaseHas('domain_checks', $expectedDomainAttributes);
+        $this->assertDatabaseHas('domain_checks', $expectedAttributes);
     }
 }
