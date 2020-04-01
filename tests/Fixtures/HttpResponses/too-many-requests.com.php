@@ -6,10 +6,10 @@ return [
     429,
     [],
     '',
-    [
-        'statusCode' => $statusCode,
+    collect([
+        'status_code' => $statusCode,
         'keywords' => null,
         'description' => null,
         'h1' => null,
-    ],
+    ]),
 ];

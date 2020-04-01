@@ -32,6 +32,11 @@ abstract class Base
         return $model;
     }
 
+    public function __toString()
+    {
+        return (string) $this->id;
+    }
+
     private function repositoryClassName(): string
     {
         $modelClassName = collect(explode('\\', get_class($this)))->last();

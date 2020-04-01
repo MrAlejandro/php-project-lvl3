@@ -24,7 +24,7 @@
             </tbody>
         </table>
         <h2 class="mb-3">{{ __('domains.checks') }}</h2>
-        <form method="post" action="{{ route('domains.check', ['id' => $domain->id]) }}">
+        <form method="post" action="{{ route('domains.checks.store', $domain) }}">
             @csrf
             <input type="submit" class="btn btn-primary" value="{{ __('domains.run_check') }}">
         </form>

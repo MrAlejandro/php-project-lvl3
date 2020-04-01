@@ -18,7 +18,9 @@ Route::get('/', function () {
 });
 
 Route::resource('domains', 'DomainController')->only([
-    'index', 'show', 'store', 'check'
+    'index', 'show', 'store'
 ]);
 
-Route::post('domains/{id}/check', 'DomainController@check')->name('domains.check');
+Route::resource('domains.checks', 'DomainCheckController')->only([
+    'store'
+]);

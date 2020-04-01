@@ -22,10 +22,10 @@ return [
     </body>
 </html>
 HTML,
-    [
-        'statusCode' => $statusCode,
+    collect([
+        'status_code' => $statusCode,
         'keywords' => $keywords,
         'description' => $description,
         'h1' => $h1,
-    ]
+    ]),
 ];

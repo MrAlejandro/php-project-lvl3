@@ -81,7 +81,7 @@ class DomainCreateForm
             return;
         }
 
-        $this->redirectRoute = route('domains.show', ['domain' => $domain->id]);
+        $this->redirectRoute = route('domains.show', $domain);
         $nonUniqueDomainErrorMessage = __('domains.already_exists');
         $fail($nonUniqueDomainErrorMessage);
     }

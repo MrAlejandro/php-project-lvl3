@@ -13,7 +13,7 @@
                 @foreach ($domains as $domain)
                     <tr>
                         <td>{{ $domain->id }}</td>
-                        <td><a href="{{ route('domains.show', $domain->id) }}">https://{{ $domain->name }}</a></td>
+                        <td><a href="{{ route('domains.show', $domain) }}">https://{{ $domain->name }}</a></td>
                         @if (empty($domainChecks[$domain->id]))
                             <td>&mdash;</td>
                         @else

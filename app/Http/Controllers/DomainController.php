@@ -32,7 +32,7 @@ class DomainController extends Controller
 
         if ($domainCreateForm->isValid()) {
             $domain = $domainCreateForm->create();
-            return redirect()->route('domains.show', ['domain' => $domain->id]);
+            return redirect()->route('domains.show', $domain);
         }
 
         $domainCreateForm->showErrors();
@@ -48,6 +48,6 @@ class DomainController extends Controller
 
         flash(__('domains.analysis_was_scheduled'))->success();
 
-        return redirect()->route('domains.show', ['domain' => $domain->id]);
+        return redirect()->route('domains.show', $domain);
     }
 }
