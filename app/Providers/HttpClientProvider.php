@@ -3,10 +3,7 @@
 namespace App\Providers;
 
 use Illuminate\Support\ServiceProvider;
-use Tests\Support\MockHandler;
-use GuzzleHttp\HandlerStack;
 use GuzzleHttp\Client;
-use App;
 
 class HttpClientProvider extends ServiceProvider
 {
@@ -14,14 +11,7 @@ class HttpClientProvider extends ServiceProvider
 
     public function register()
     {
-        if (App::environment() === 'testing') {
-            $handler = new MockHandler();
-            $stack = HandlerStack::create($handler);
-            $config = ['handler' => $stack];
-        } else {
-            $config = ['allow_redirects' => ['max' => self::MAX_REDIRECTS]];
-        }
-
+        $config = ['allow_redirects' => ['max' => self::MAX_REDIRECTS]];
         $this->app->bind('HttpClient', function () use ($config) {
             return new Client($config);
         });

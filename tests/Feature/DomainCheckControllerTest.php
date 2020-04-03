@@ -3,6 +3,7 @@
 namespace Tests\Feature;
 
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Tests\Support\HttpRequestMockSupport;
 use Tests\Support\FixturesSupport;
 use App\Models\Domain;
 use Tests\TestCase;
@@ -11,6 +12,7 @@ class DomainCheckControllerTest extends TestCase
 {
     use RefreshDatabase;
     use FixturesSupport;
+    use HttpRequestMockSupport;
 
     public function testStore()
     {
@@ -18,6 +20,7 @@ class DomainCheckControllerTest extends TestCase
         $domain = static::$factory->create(Domain::class, ['name' => $domainName]);
         $route = route('domains.checks.store', $domain);
 
+        $this->mockHttpRequest();
         $response = $this->post($route);
         $response->assertSessionHasNoErrors();
 
@@ -37,6 +40,7 @@ class DomainCheckControllerTest extends TestCase
         $domain = static::$factory->create(Domain::class, ['name' => 'nonexistent.com']);
         $route = route('domains.checks.store', $domain);
 
+        $this->mockHttpRequest();
         $response = $this->post($route);
 
         $redirectionRoute = route('domains.show', $domain);
@@ -52,6 +56,8 @@ class DomainCheckControllerTest extends TestCase
         $domainName = 'too-many-requests.com';
         $domain = static::$factory->create(Domain::class, ['name' => $domainName]);
         $route = route('domains.checks.store', $domain);
+
+        $this->mockHttpRequest();
         $response = $this->withoutExceptionHandling()->post($route);
 
         $redirectionRoute = route('domains.show', $domain);
